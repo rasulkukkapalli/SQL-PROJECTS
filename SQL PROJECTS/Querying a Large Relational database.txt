@@ -1,0 +1,74 @@
+SELECT 
+    p.*,
+    e.EmailAddress,
+    ph.PhoneNumber,
+    pht.Name AS PhoneNumberType
+FROM 
+    Person.Person p
+LEFT JOIN 
+    Person.EmailAddress e ON p.BusinessEntityID = e.BusinessEntityID
+LEFT JOIN 
+    Person.PersonPhone ph ON p.BusinessEntityID = ph.BusinessEntityID
+LEFT JOIN 
+    Person.PhoneNumberType pht ON ph.PhoneNumberTypeID = pht.PhoneNumberTypeID;
+
+
+
+SELECT * 
+FROM 
+    Sales.SalesOrderHeader
+WHERE 
+    OrderDate BETWEEN '2011-05-01' AND '2011-05-31';
+
+
+
+SELECT 
+    soh.SalesOrderID, 
+    soh.OrderDate, 
+    sod.*
+FROM 
+    Sales.SalesOrderHeader soh
+JOIN 
+    Sales.SalesOrderDetail sod ON soh.SalesOrderID = sod.SalesOrderID
+WHERE 
+    soh.OrderDate BETWEEN '2011-05-01' AND '2011-05-31';
+
+
+
+SELECT 
+    SUM(TotalDue) AS TotalSales
+FROM 
+    Sales.SalesOrderHeader
+WHERE 
+    OrderDate BETWEEN '2011-05-01' AND '2011-05-31';
+
+
+SELECT 
+    MONTH(OrderDate) AS Month, 
+    SUM(TotalDue) AS TotalSales
+FROM 
+    Sales.SalesOrderHeader
+WHERE 
+    YEAR(OrderDate) = 2011
+GROUP BY 
+    MONTH(OrderDate)
+ORDER BY 
+    TotalSales ASC;
+
+
+SELECT 
+    c.CustomerID, 
+    p.FirstName, 
+    p.LastName, 
+    SUM(soh.TotalDue) AS TotalSales
+FROM 
+    Sales.Customer c
+JOIN 
+    Person.Person p ON c.PersonID = p.BusinessEntityID
+JOIN 
+    Sales.SalesOrderHeader soh ON c.CustomerID = soh.CustomerID
+WHERE 
+    p.FirstName = 'Gustavo' 
+    AND p.LastName = 'Achong'
+GROUP BY 
+    c.CustomerID, p.FirstName, p.LastName;
